@@ -13,8 +13,8 @@
 
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 
-const char* ssid = "GUBAT";
-const char* password = "Forest2002";
+const char* ssid = "SET_YOUR_WIFI_HERE";
+const char* password = "YOUR_WIFI_PASSWORD";
 
 const char* apiUrl = "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,cardano,solana,dogecoin&vs_currencies=usd";
 
