@@ -15,7 +15,7 @@ Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 
 const char* ssid = "SET_YOUR_WIFI_HERE";
 const char* password = "YOUR_WIFI_PASSWORD";
-
+//Change your preferred Crypto Currency documentation at https://docs.coingecko.com/reference/simple-price
 const char* apiUrl = "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,cardano,solana,dogecoin&vs_currencies=usd";
 
 struct Coin {
@@ -25,6 +25,7 @@ struct Coin {
   String text;
 };
 
+//Change your Base Price Here 
 Coin coins[5] = {
   {"BTC", 116314.0, 0, ""},
   {"ETH", 3841.0, 0, ""},
@@ -106,7 +107,7 @@ void fetchPrices() {
       http.end();
       return;
     }
-
+    //  Modify this with your preffered Crypto
     // Check if data exists before accessing
     if (doc["bitcoin"]["usd"]) coins[0].currentPrice = doc["bitcoin"]["usd"];
     if (doc["ethereum"]["usd"]) coins[1].currentPrice = doc["ethereum"]["usd"];
