@@ -1,0 +1,4 @@
+VCC --- 3.3V 
+GND --- GND 
+SCK --- GPIO4
+SDA --- GPIO3 
