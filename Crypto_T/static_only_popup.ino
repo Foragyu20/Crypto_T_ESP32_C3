@@ -1,65 +1,46 @@
-void loop() {
-  unsigned long now = millis();
+// Animation variables for popup effect
+bool animatingIn = true;
+unsigned long animationStartTime = 0;
+const unsigned long animationDuration = 500; // 500ms animation
+int animationY = 0;
 
-  // Update prices every 10 minutes
-  static unsigned long lastFetch = 0;
-  if (now - lastFetch > 600000) {
-    lastFetch = now;
-    fetchPrices();
-  }
-
-  // Switch coin display every 10 seconds
-  static bool redraw = true;
-  if (now - lastSwitchTime > switchInterval) {
-    lastSwitchTime = now;
-    currentCoinIndex++;
-    if (currentCoinIndex >= 5) currentCoinIndex = 0;
-    redraw = true; // Mark that we need to update screen
-  }
-
-  if (redraw) {
-    redraw = false;
-    display.clearDisplay();
-
-    // Main crypto info
-    display.setTextSize(2);
-    display.setTextColor(SSD1306_WHITE);
-    display.setCursor(0, 16);
-    display.print(coins[currentCoinIndex].name);
-
-    // Price
-    display.setCursor(0, 36);
-    String priceStr = "$" + String(coins[currentCoinIndex].currentPrice, 
-                                   (strcmp(coins[currentCoinIndex].name, "ADA") == 0 || 
-                                    strcmp(coins[currentCoinIndex].name, "DOGE") == 0) ? 4 : 2);
-    display.print(priceStr);
-
-    // Change %
-    display.setCursor(0, 52);
-    display.setTextSize(1);
-    display.print(formatChange(coins[currentCoinIndex].currentPrice, coins[currentCoinIndex].basePrice));
-
-    // WiFi indicator
-    if (WiFi.status() == WL_CONNECTED) {
-      display.setCursor(SCREEN_WIDTH - 24, 0);
-      display.print("WiFi");
-    } else {
-      display.setCursor(SCREEN_WIDTH - 18, 0);
-      display.print("X");
-    }
-
-    // Coin indicator
-    display.setCursor(0, 0);
-    display.print((currentCoinIndex + 1));
-    display.print("/5");
-
-    display.display();
-  }
-
-  // WiFi reconnection check
-  static unsigned long lastWiFiCheck = 0;
-  if (now - lastWiFiCheck > 30000) {
-    lastWiFiCheck = now;
-    if (WiFi.status() != WL_CONNECTED) connectWiFi();
-  }
+// Easing function for smooth animation
+float easeOutQuart(float t) {
+  return 1 - pow(1 - t, 4);
 }
+
+void displayCoin() {
+  display.clearDisplay();
+  
+  // Calculate animation progress
+  unsigned long now = millis();
+  float progress = 0;
+  
+  if (animatingIn) {
+    progress = (float)(now - animationStartTime) / animationDuration;
+    if (progress >= 1.0) {
+      progress = 1.0;
+      animatingIn = false;
+    }
+    progress = easeOutQuart(progress);
+  } else {
+    progress = 1.0;
+  }
+  
+  // Calculate Y position based on animation
+  int targetY = 16; // Center position
+  animationY = (int)(targetY * progress - (1.0 - progress) * 30); // Start from above
+  
+  // Your display content here - use animationY for Y positioning
+  display.setTextSize(2);
+  display.setTextColor(SSD1306_WHITE);
+  display.setCursor(0, animationY);
+  display.print("Your Content");
+  
+  display.display();
+}
+
+// In your main loop, when switching content:
+// Start new popup animation
+animatingIn = true;
+animationStartTime = millis();
